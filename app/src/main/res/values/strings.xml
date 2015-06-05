@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">WinRemote</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="pref_tcp_ip_title">Network IP</string>
+    <string name="pref_tcp_ip_summary">The tcp network address to connect to.</string>
+    <string name="pref_tcp_port_title">Port</string>
+    <string name="pref_tcp_port_summary">The tcp port for the connection.</string>
+    <string name="pref_header_tcp">Tcp connection</string>
+    <string name="pref_tcp_timeout_title">Timeout</string>
+    <string name="pref_tcp_timeout_summary">Defines the timeout for the tcp connection.</string>
+</resources>
