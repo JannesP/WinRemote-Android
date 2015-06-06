@@ -25,11 +25,19 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:text="Request volume"
         android:id="@+id/buttonRequestVolume"
         android:layout_below="@+id/buttonSendTestPackage"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <SeekBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBarRemoteVolume"
+        android:layout_below="@+id/buttonRequestVolume"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -37,7 +45,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Volume: ERROR"
         android:id="@+id/textViewRemoteVolume"
-        android:layout_below="@+id/buttonRequestVolume"
+        android:layout_below="@+id/seekBarRemoteVolume"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"/>
 
@@ -47,7 +55,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Muted: ERROR"
         android:id="@+id/textViewRemoteMuted"
-        android:layout_below="@+id/buttonRequestVolume"
+        android:layout_below="@+id/seekBarRemoteVolume"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"/>
 
@@ -60,6 +68,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+
 
 
 </RelativeLayout>

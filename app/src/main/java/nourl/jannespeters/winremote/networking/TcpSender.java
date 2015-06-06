@@ -1,7 +1,6 @@
 package nourl.jannespeters.winremote.networking;
 
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
@@ -77,6 +76,7 @@ public class TcpSender implements INetworkInterface {
                         socket.close();
                     } catch (Exception e) {
                         e.printStackTrace();
+                        failed = true;
                     }
                 }
                 Result result;
@@ -109,11 +109,23 @@ public class TcpSender implements INetworkInterface {
     }
 
     @Override
-    public int sendMessage(final int messageId, final IResultReceiver resultReceiver) {
+    public int sendMessage(int messageId, IResultReceiver resultReceiver) {
+        return sendMessage(messageId, 0, resultReceiver);
+    }
+
+    @Override
+    public int sendMessage(final int messageId, final int data, final IResultReceiver resultReceiver) {
+        final byte[] message = createStandardMessage(messageId, data);
+        Log.d("SENT DATA: " + messageId, arrayString(message));
+        return sendByteArray(message, resultReceiver);
+    }
+
+    private int sendByteArray(final byte[] data, final IResultReceiver resultReceiver) {
         final int requestId = getNewRequestId();
         Thread connectionThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                boolean failed = false;
                 Socket socket = new Socket();
                 OutputStream writer = null;
                 try {
@@ -121,18 +133,27 @@ public class TcpSender implements INetworkInterface {
                     writer = socket.getOutputStream();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    failed = true;
                 }
                 try {
                     if (writer != null) {
-                        byte[] message = createStandardMessage(messageId);
-                        writer.write(message);
+                        writer.write(data);
                         writer.flush();
                         writer.close();
                     }
                     socket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+                    failed = true;
                 }
+
+                final Result fResult = new Result(0, requestId, failed ? NETWORK_STATUS.FAILED : NETWORK_STATUS.OK, null);
+                resultReceiver.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        resultReceiver.receiveResult(fResult);
+                    }
+                });
             }
         });
         connectionThread.start();
@@ -150,6 +171,13 @@ public class TcpSender implements INetworkInterface {
         byte[] message = new byte[32];
         byte[] byteMessageId = createBytesFromInt(messageId);
         System.arraycopy(byteMessageId, 0, message, 0, byteMessageId.length);
+        return message;
+    }
+
+    private static byte[] createStandardMessage(int messageId, int data) {
+        byte[] message = createStandardMessage(messageId);
+        byte[] byteData = createBytesFromInt(data);
+        System.arraycopy(byteData, 0, message, 4, byteData.length);
         return message;
     }
 
